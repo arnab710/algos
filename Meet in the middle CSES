@@ -1,0 +1,63 @@
+if my number of elements in an array is very big ..that is if it is more that 20 elements then we must think of this algo .basically it divides the subarray into two parts then apply the operations..... 
+
+void solver(vector<ll> &nums, int i,vector<ull>& sum,ull &total,ull &x){
+ 
+    if(total>x) return;
+    if(i==nums.size()){
+        if(total!=0) sum.push_back(total);
+        return;
+    }
+ 
+        total += nums[i];
+        solver(nums,i+1,sum,total,x);
+        total -= nums[i];
+ 
+        solver(nums,i+1,sum,total,x);
+ 
+}
+void helper(){
+ 
+    ull n,x;
+    cin>>n>>x;
+    vector<ll> nums(n);
+ 
+    for(auto &it: nums) cin>>it;
+ 
+    vector<ll> nums1;
+    vector<ll> nums2;
+    int s = 0; 
+    for(s;s<(n>>1);s++) nums1.push_back(nums[s]);
+ 
+    for(s;s<n;s++) nums2.push_back(nums[s]); 
+ 
+    vector<ull> sum1;
+    ull total = 0;
+    solver(nums1,0,sum1,total,x); 
+    total = 0;
+    vector<ull> sum2;
+    solver(nums2,0,sum2,total,x);
+ 
+    sort(sum1.begin(),sum1.end());
+    sort(sum2.begin(),sum2.end());
+ 
+    ull c = 0;
+     for(auto &it: sum1) {
+        if(it==x){
+            sum1.pop_back();
+         c++;
+}}
+     for(auto &it: sum2) {
+        if(it==x) {
+            c++;
+            sum2.pop_back();
+}
+}
+    unordered_map<int,int> m;
+    for(auto &it: sum2) m[it]++;
+ 
+    for(int i=0;i<sum1.size();i++){
+        if(m.find(x-sum1[i])!=m.end())  c += m[x-sum1[i]];
+    }
+ 
+   cout<<c;   
+   }
