@@ -1,0 +1,71 @@
+// if you fail to understand see this video : https://youtu.be/JUFHwaZjO_M
+dont see the process in this video see the method meet in the middle.....//
+
+class Solution {
+private:
+    void solver(vector<long long>& nums, int i, long long &sumi, map<int,vector<int>>& sum, int size_c){
+        
+        if(i==nums.size()){
+            sum[size_c].push_back(sumi);
+            return;
+        }
+        
+        sumi += nums[i];
+        solver(nums,i+1,sumi,sum,size_c+1);
+        sumi -= nums[i];
+        
+        solver(nums,i+1,sumi,sum,size_c);
+    }
+public:
+    int minimumDifference(vector<int>& nums) {
+        
+        vector<long long> nums1;
+        vector<long long> nums2;
+        int n = nums.size();
+        
+        for(int i = 0,j = (n>>1); i<(n>>1) ;i++,j++){
+            
+            nums1.push_back(nums[i]);
+            nums2.push_back(nums[j]);
+        }
+        
+        map<int,vector<int>> sum1;
+        map<int,vector<int>> sum2;
+        
+        long long sum_1 = 0;
+        long long sum_2 = 0;
+        solver(nums1,0,sum_1,sum1,0);
+        solver(nums2,0,sum_2,sum2,0);
+        
+        for(auto &it: sum2) sort((it.second).begin(),(it.second).end());
+        
+        long long total = 0;
+        for(auto &it: nums) total += it;
+        
+        int req_size = (n>>1);
+        long long int mini = INT_MAX;
+        
+        for(auto &it: sum1){
+            int rem_size = req_size - it.first;
+            
+            if(sum2.find(rem_size)!=sum2.end()){
+                
+                for(auto &it2 : it.second){
+                    int desired = (total>>1) - it2;
+                auto itr = lower_bound((sum2[rem_size]).begin(), (sum2[rem_size]).end() , desired);
+                
+                if(itr!=sum2[rem_size].end()){
+                    int check = (2*(it2+(*itr)));
+                    
+                    mini = min(mini,abs(total - check));
+                }
+                  else {
+                     int sizee = sum2[rem_size].size(); 
+                     mini = min(mini,abs(total - 2*(it2 + sum2[rem_size][sizee-1])));
+             }   
+        }
+    }
+}
+        return mini;
+    }
+};
